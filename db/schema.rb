@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_15_140204) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_15_142613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -52,6 +52,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_15_140204) do
     t.index ["parent_id"], name: "index_children_on_parent_id"
   end
 
+  create_table "children_subjects", id: false, force: :cascade do |t|
+    t.bigint "child_id", null: false
+    t.bigint "subject_id", null: false
+  end
+
   create_table "parents", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -74,6 +79,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_15_140204) do
     t.datetime "updated_at", null: false
     t.string "reviewable_type"
     t.integer "reviewable_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.string "name"
+    t.string "grade"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "teachers", force: :cascade do |t|

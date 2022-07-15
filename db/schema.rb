@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_15_131117) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_15_132000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,14 +23,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_15_131117) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "pods", force: :cascade do |t|
+    t.string "name"
+    t.string "grades"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "teachers", force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.string "address"
     t.string "phone"
     t.date "Date_of_join"
+    t.bigint "pod_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["pod_id"], name: "index_teachers_on_pod_id"
   end
 
+  add_foreign_key "teachers", "pods"
 end

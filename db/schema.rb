@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_15_132931) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_15_134626) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "account_number"
+    t.bigint "teacher_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["teacher_id"], name: "index_accounts_on_teacher_id"
+  end
 
   create_table "child_pods", force: :cascade do |t|
     t.string "status"
@@ -56,13 +64,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_15_132931) do
     t.string "email"
     t.string "address"
     t.string "phone"
-    t.date "Date_of_join"
     t.bigint "pod_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["pod_id"], name: "index_teachers_on_pod_id"
   end
 
+  add_foreign_key "accounts", "teachers"
   add_foreign_key "child_pods", "children"
   add_foreign_key "child_pods", "pods"
   add_foreign_key "children", "parents"

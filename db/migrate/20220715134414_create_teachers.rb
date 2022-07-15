@@ -5,7 +5,6 @@ class CreateTeachers < ActiveRecord::Migration[7.0]
       t.string :email
       t.string :address
       t.string :phone
-      t.date :Date_of_join
       t.references :pod, null: false, foreign_key: true
 
       t.timestamps

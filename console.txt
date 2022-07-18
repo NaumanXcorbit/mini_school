@@ -40,3 +40,13 @@ Parent.find_each(start: 2000) do |a|
  Parent.find_in_batches(batch_size: 2500) do |a|
  2.7.2 :054 >   puts "Hello______ s is #{a} Parent"
  2.7.2 :055 > end
+
+ time_range = (Time.now.midnight - 1.day)..Time.now.midnight
+ Parent.joins(:orders).where('orders.created_at' => time_range).distinct
+Eager Loading Associations
+ Account.all
+ accounts= Account.limit(10)
+
+ account = Account.includes(:account_history).limit(10)
+ parent = Parent.preload(:children).limit(10)
+ parent = Parent.eager_load(:children).limit(10)

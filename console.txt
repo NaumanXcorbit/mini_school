@@ -1,0 +1,42 @@
+find//////////////
+
+Pod.find(2)
+SELECT "pods".* FROM "pods" WHERE "pods"."id" = $1 LIMIT $2
+pod.find(1,2)
+SELECT "pods".* FROM "pods" WHERE "pods"."id" IN ($1, $2)
+
+take/////////////
+pod = Pod.take
+SELECT "pods".* FROM "pods" LIMIT $1
+teacher = Teacher.take
+SELECT "teachers".* FROM "teachers" LIMIT $1
+pods = Pod.take(2)
+SELECT "pods".* FROM "pods" LIMIT $1  [["LIMIT", 2]]
+
+first/////////
+account = Account.first
+SELECT "accounts".* FROM "accounts" ORDER BY "accounts"."id" ASC LIMIT $1
+
+Subject.first
+Subject.first!
+Subject.last
+Subject.last!
+
+Pod.last(4)
+SELECT "pods".* FROM "pods" ORDER BY "pods"."id" DESC LIMIT $1  [["LIMIT", 4]]
+
+pod = Pod.find_by!(name: "Exercise", grades: nil)
+account = Account.where(account_number: "11133n344").take
+account = Account.where(account_number: "11133n344").take!
+
+Parent.find_each(start: 2000) do |a|
+2.7.2 :036 >   puts "Hello______ This is #{a.id} Parent"
+2.7.2 :037 > end
+
+\Parent.find_each(start: 2000, finish: 4000) do |a|
+ 2.7.2 :042 >   puts "Hello______ This is #{a.id} Parent"
+ 2.7.2 :043 > end
+
+ Parent.find_in_batches(batch_size: 2500) do |a|
+ 2.7.2 :054 >   puts "Hello______ s is #{a} Parent"
+ 2.7.2 :055 > end

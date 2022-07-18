@@ -29,6 +29,11 @@ pod = Pod.find_by!(name: "Exercise", grades: nil)
 account = Account.where(account_number: "11133n344").take
 account = Account.where(account_number: "11133n344").take!
 
+ AccountHistory.where(account_status: "Active").limit(10)
+
+ AccountHistory.where(account_status: "Active").rewhere(account_status: "Pending").limit(10)
+
+
 Parent.find_each(start: 2000) do |a|
 2.7.2 :036 >   puts "Hello______ This is #{a.id} Parent"
 2.7.2 :037 > end
@@ -47,6 +52,149 @@ Eager Loading Associations
  Account.all
  accounts= Account.limit(10)
 
- account = Account.includes(:account_history).limit(10)
- parent = Parent.preload(:children).limit(10)
- parent = Parent.eager_load(:children).limit(10)
+AccountHistory.all.each do |a|
+   puts "Account History Status is #{a.account_status} of #{a.account.account_number}"
+end
+
+AccountHistory.includes(:account).each do |a|
+ puts "Account History Status is #{a.account_status} of #{a.account.account_number}"
+end
+
+Child.preload(:parent).limit(10).each do |c|
+puts "#{c.first_name} and its parent is #{c.parent.name}"
+end
+
+Pod.eager_load(:teacher).limit(10).each do |p|
+puts "#{p.name} is Pod and Teacher is #{p.teacher.name}"
+end
+
+AccountHistory.where(account_status: "Active").joins(:account).limit(10).each do |a|
+2.7.2 :104 >   puts "This is #{a.account_status} and account is #{a.account.account_number}"
+2.7.2 :105 > end
+
+
+ Parent.find_each(start: 2000) do |c|
+2.7.2 :113 >   puts "Thus is #{c.name}"
+2.7.2 :114 > end
+
+2.7.2 :118 > Parent.find_each(start: 1000, finish: 2000 ) do |c|
+2.7.2 :119 >   puts "Thus is #{c.name}"
+2.7.2 :120 > end
+
+2.7.2 :124 > Parent.find_each(batch_size: 2000) do |c|
+2.7.2 :125 >   puts "Thus is #{c.name}"
+2.7.2 :126 > end
+
+
+ Parent.where(id: [2,3,4,5])
+
+ Parent.where.not(id: [2,3,4,5])
+
+  pod = Pod.where(name: "Pollich-Pollich").or(Pod.where(grades: "MRK")) ///////also can use |
+  pod = Pod.where(name: "Pollich-Pollich").and(Pod.where(grades: "MRK")) //////also can use &
+
+  2.7.2 :168 > pods.order(created_at: :asc)
+07f8647f4ef00 id: nil, created_at: Mon, 18 Jul 2022 07:54:31.379633000 UTC +00:00>]
+2.7.2 :189 > Pod.limit(12).offset!(20)
+
+ Pod.limit(12).offset!(10000)
+
+ c.distinct(false)
+ Pod.limit(12).offset!(10000)
+
+ Pod.select("created_at").group("created_at")
+
+  Pod.where('id > 100').limit(20)
+
+ Pod.where('id > 100').limit(20).order('id desc')
+ unscope///////
+ Pod.where('id > 100').limit(20).order('id desc').unscope(:order)
+
+ Pod.where('id > 100').limit(20).order('id desc').only(:order, :where)
+
+  Pod.select(:name)
+ Pod.select(:name).reselect(:created_at)
+Parent.find(10).children.reorder("created_at desc")
+
+Pod.where('id < 10').order(created_at: :desc)
+Pod.where('id < 10').order(created_at: :desc).reverse_order
+
+ AccountHistory.where(account_status: "Active").limit(10)
+
+ AccountHistory.where(account_status: "Active").rewhere(account_status: "Pending").limit(10)
+
+ Pod.readonly.last
+
+
+SELECT "teachers".* FROM "teachers" INNER JOIN "pods" ON teacher.pod_id = 1
+Teacher.joins(:pod)
+
+time_range =(Time.now.midnight - 1.day)..Time.new.midnight
+
+
+2.7.2 :261 > AccountHistory.where(account_status: "Active").or( AccountHistory.where(account: {created_
+at: time_range})).joins(:account)
+
+
+
+join/////////------------
+The SQL JOIN clause is used whenever we have to select data from 2 or more tables.
+
+include///////-------------
+With includes, Active Record ensures that all of the specified associations are loaded using the minimum possible number of queries.
+
+Customer.includes(orders: {books: [:supplier, :author]}).find(1)
+
+
+
+AccountHistory.joins(:account)
+
+2.7.2 :278 > AccountHistory.preload(:account).limit(10).each do |a|
+2.7.2 :279 >   puts "a.account status is #{a.account_status} and account numeber is #{a.account.account
+_number}"
+2.7.2 :280 > end
+
+
+2.7.2 :278 > AccountHistory.includes(:account).limit(10).each do |a|
+2.7.2 :279 >   puts "a.account status is #{a.account_status} and account numeber is #{a.account.account
+_number}"
+2.7.2 :280 > end
+
+
+2.7.2 :278 > AccountHistory.eager_load(:account).limit(10).each do |a|
+2.7.2 :279 >   puts "a.account status is #{a.account_status} and account numeber is #{a.account.account
+_number}"
+2.7.2 :280 > end
+
+An enum lets you define an Array of values for an attribute and refer to them by name.
+The actual value stored in the database is an integer that has been mapped to one of the values.
+
+
+
+ Pod.find_or_create_by!(name: "Mexseco")
+
+  pod = Pod.find_or_initialize_by(name: "lara Mission")
+
+  pod.persisted?
+
+  pod.new_record?
+
+
+  Parent.find_by_sql("SELECT * FROM parents INNER JOIN children ON children.id = parent_id O
+  RDER BY parents.created_at desc")
+
+
+  Parent.connection.select_all("SELECT name, created_at FROM parents WHERE id = '1'").to_a
+
+
+   Pod.all.pluck(:id)
+
+ Pod.all.pluck(:id, :name)
+
+  AccountHistory.active
+  AccountHistory.pending
+  AccountHistory.idle
+
+  scope :pending, -> { where(account_status: "Pending") }
+  scope :active, -> { where(account_status: "Active") }
+  scope :idle, -> { where(account_status: "Idle") }
